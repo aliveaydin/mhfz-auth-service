@@ -1,0 +1,84 @@
+
+syntax = "proto3";
+
+package auth;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+message user {
+    string id = 1;
+    string email = 2;
+    string password = 3;
+    string fullname = 4;
+    string avatar = 5;
+    bool emailVerified = 6;
+}
+
+
+
+message registerUserRequest {
+    optional string avatar = 1;
+    optional string socialCode = 2;
+    string password = 3;
+    string fullname = 4;
+    string email = 5;
+}
+message updateUserRequest {
+    optional string fullname = 1;
+    optional string avatar = 2;
+    string userId = 3;
+}
+message updateUserRoleRequest {
+    string roleId = 1;
+    string userId = 2;
+}
+message updatePasswordRequest {
+    string oldPassword = 1;
+    string newPassword = 2;
+    string userId = 3;
+}
+message getUserRequest {
+    string userId = 1;
+}
+message getUserResponse {
+    string id = 1;
+    string email = 2;
+    string password = 3;
+    string fullname = 4;
+    string avatar = 5;
+    bool emailVerified = 6;
+}
+message listUsersRequest {
+    
+}
+message listUsersResponse {
+    repeated user items = 1;
+}
+
+message VoidRequest {}
+
+message CurrentUserReply {
+    string userId = 1;
+    string sessionId = 2;
+    string fullname = 3;
+    string email = 4;
+    string roleId = 5;
+    string avatar = 6;
+    bool emailVerified = 7;
+        string accessToken = 8;
+}
+
+message HelloMessageReply {
+    string hello = 1;
+}
+
+service authService {
+    rpc registerUser (registerUserRequest) returns (user);
+    rpc updateUser (updateUserRequest) returns (user);
+    rpc updateUserRole (updateUserRoleRequest) returns (user);
+    rpc updatePassword (updatePasswordRequest) returns (user);
+    rpc getUser (getUserRequest) returns (getUserResponse);
+    rpc listUsers (listUsersRequest) returns (listUsersResponse);
+    rpc currentUser(VoidRequest) returns (CurrentUserReply);
+    rpc helloMessage(VoidRequest) returns (HelloMessageReply);
+}
