@@ -105,6 +105,28 @@ module.exports = (app) => {
 
           {
             isAuth: true,
+            method: "DELETE",
+            url: "/users/{userId}",
+            title: "deleteUser",
+            query: [],
+
+            body: {
+              type: "json",
+              content: {},
+            },
+
+            parameters: [
+              {
+                key: "userId",
+                value: "",
+                description: "",
+              },
+            ],
+            headers: [],
+          },
+
+          {
+            isAuth: true,
             method: "PATCH",
             url: "/userrole/{userId}",
             title: "updateUserRole",

@@ -74,7 +74,7 @@ class MhfzLoginSession extends MhfzSession {
     let user = null;
     if (byPassword) {
       user = await this.#getUserWithUsernamePassword(
-        byPassword.username,
+        byPassword.username ?? byPassword.email,
         byPassword.password,
       );
     } else if (bySubject) {
@@ -135,7 +135,10 @@ class MhfzLoginSession extends MhfzSession {
   }
 
   async setLoginToRequest(req, byPassword, bySubject) {
-    if (byPassword && (!byPassword.password || !byPassword.username)) {
+    if (
+      byPassword &&
+      (!byPassword.password || (!byPassword.username && !byPassword.email))
+    ) {
       throw new NotAuthenticatedError(
         "errMsg_UserCanNotLoginWithoutCredentials",
         ErrorCodes.UserLoginWithoutCredentials,

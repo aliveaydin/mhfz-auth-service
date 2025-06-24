@@ -4,6 +4,7 @@ module.exports = {
   // User Db Object
   RegisterUserManager: require("./main/user/register-user"),
   UpdateUserManager: require("./main/user/update-user"),
+  DeleteUserManager: require("./main/user/delete-user"),
   UpdateUserroleManager: require("./main/user/update-userrole"),
   UpdatePasswordManager: require("./main/user/update-password"),
   GetUserManager: require("./main/user/get-user"),

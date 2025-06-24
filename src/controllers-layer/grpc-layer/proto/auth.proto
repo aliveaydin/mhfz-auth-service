@@ -28,6 +28,9 @@ message updateUserRequest {
     optional string avatar = 2;
     string userId = 3;
 }
+message deleteUserRequest {
+    string userId = 1;
+}
 message updateUserRoleRequest {
     string roleId = 1;
     string userId = 2;
@@ -75,6 +78,7 @@ message HelloMessageReply {
 service authService {
     rpc registerUser (registerUserRequest) returns (user);
     rpc updateUser (updateUserRequest) returns (user);
+    rpc deleteUser (deleteUserRequest) returns (user);
     rpc updateUserRole (updateUserRoleRequest) returns (user);
     rpc updatePassword (updatePasswordRequest) returns (user);
     rpc getUser (getUserRequest) returns (getUserResponse);

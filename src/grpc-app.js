@@ -34,6 +34,7 @@ function helloMessage(call, callback) {
 const {
   registerUser,
   updateUser,
+  deleteUser,
   updateUserrole,
   updatePassword,
   getUser,
@@ -43,6 +44,7 @@ const {
 server.addService(authPackage.authService.service, {
   registerUser: registerUser,
   updateUser: updateUser,
+  deleteUser: deleteUser,
   updateUserrole: updateUserrole,
   updatePassword: updatePassword,
   getUser: getUser,

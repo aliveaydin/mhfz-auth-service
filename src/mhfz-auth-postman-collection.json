@@ -78,6 +78,34 @@
       "response": []
     },
     {
+      "name": "deleteUser",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "ExampleValue",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{serviceUrl}}//users/:userId",
+          "host": [
+            "{{serviceUrl}}"
+          ],
+          "path": [
+            "users",
+            ":userId"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "updateUserRole",
       "request": {
         "auth": {

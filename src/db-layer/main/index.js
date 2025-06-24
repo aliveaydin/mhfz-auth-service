@@ -5,6 +5,7 @@ module.exports = {
   // User Db Object
   dbRegisterUser: userFunctions.dbRegisterUser,
   dbUpdateUser: userFunctions.dbUpdateUser,
+  dbDeleteUser: userFunctions.dbDeleteUser,
   dbUpdateUserrole: userFunctions.dbUpdateUserrole,
   dbUpdatePassword: userFunctions.dbUpdatePassword,
   dbGetUser: userFunctions.dbGetUser,

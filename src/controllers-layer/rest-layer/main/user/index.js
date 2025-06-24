@@ -9,6 +9,8 @@ const userRouter = express.Router();
 userRouter.post("/registeruser", require("./register-user"));
 // updateUser controller
 userRouter.patch("/users/:userId", require("./update-user"));
+// deleteUser controller
+userRouter.delete("/users/:userId", require("./delete-user"));
 // updateUserRole controller
 userRouter.patch("/userrole/:userId", require("./update-userrole"));
 // updatePassword controller

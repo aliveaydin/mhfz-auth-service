@@ -40,66 +40,63 @@ If you want to use the cache by other select criteria, you can configure any dat
 
 ### Constant Properties
 
+`email`
+
 Constant properties are defined to be immutable after creation, meaning they cannot be updated or changed once set. They are typically used for properties that should remain constant throughout the object's lifecycle.
 A property is set to be constant if the `Allow Update` option is set to `false`.
 
-- **email**: String
-
 ### Auto Update Properties
+
+`fullname` `avatar`
 
 An update crud route created with the option `Auto Params` enabled will automatically update these properties with the provided values in the request body.
 If you want to update any property in your own business logic not by user input, you can set the `Allow Auto Update` option to false.
 These properties will be added to the update route's body parameters and can be updated by the user if any value is provided in the request body.
 
-- **fullname**: String
-
-- **avatar**: String
-
 ### Hashed Properties
+
+`password`
 
 Hashed properties are stored in the database as a hash value, providing an additional layer of security for sensitive data.
 
-- **password**: String
-
 ### Elastic Search Indexing
 
-Properties that are indexed in Elastic Search will be searchable via the Elastic Search API. While all properties are stored in the elastic search index of the data object, only those marked for Elastic Search indexing will be available for search queries.
+`email` `fullname` `emailVerified`
 
-- **email**: String
-
-- **fullname**: String
-
-- **emailVerified**: Boolean
+Properties that are indexed in Elastic Search will be searchable via the Elastic Search API.
+While all properties are stored in the elastic search index of the data object, only those marked for Elastic Search indexing will be available for search queries.
 
 ### Database Indexing
+
+`email`
 
 Properties that are indexed in the database will be optimized for query performance, allowing for faster data retrieval.
 Make a property indexed in the database if you want to use it frequently in query filters or sorting.
 
-- **email**: String
-
 ### Unique Properties
+
+`email`
 
 Unique properties are enforced to have distinct values across all instances of the data object, preventing duplicate entries.
 Note that a unique property is automatically indexed in the database so you will not need to set the `Indexed in DB` option.
 
-- **email**: String
-
 ### Cache Select Properties
+
+`email`
 
 Cache select properties are used to collect data from Redis entity cache with a different key than the data object id.
 This allows you to cache data that is not directly related to the data object id, but a frequently used filter.
 
-- **email**: String
-
 ### Secondary Key Properties
+
+`email`
 
 Secondary key properties are used to create an additional indexed identifiers for the data object, allowing for alternative access patterns.
 Different than normal indexed properties, secondary keys will act as primary keys and Mindbricks will provide automatic secondary key db utility functions to access the data object by the secondary key.
 
-- **email**: String
-
 ### Filter Properties
+
+`email` `password` `fullname` `avatar` `emailVerified`
 
 Filter properties are used to define parameters that can be used in query filters, allowing for dynamic data retrieval based on user input or predefined criteria.
 These properties are automatically mapped as route parameters in the listing CRUD routes that have "Auto Params" enabled.

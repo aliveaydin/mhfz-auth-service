@@ -28,6 +28,19 @@ class UserUpdatedPublisher extends ServicePublisher {
   }
 }
 
+// Publisher class for deleteUser route
+const { UserDeletedTopic } = require("./topics");
+class UserDeletedPublisher extends ServicePublisher {
+  constructor(user, session, requestId) {
+    super(UserDeletedTopic, user, session, requestId);
+  }
+
+  static async Publish(user, session, requestId) {
+    const _publisher = new UserDeletedPublisher(user, session, requestId);
+    await _publisher.publish();
+  }
+}
+
 // Publisher class for updateUserRole route
 const { UserroleUpdatedTopic } = require("./topics");
 class UserroleUpdatedPublisher extends ServicePublisher {
@@ -91,6 +104,7 @@ class UsersListedPublisher extends ServicePublisher {
 module.exports = {
   UserRegisterredPublisher,
   UserUpdatedPublisher,
+  UserDeletedPublisher,
   UserroleUpdatedPublisher,
   PasswordUpdatedPublisher,
   UserRetrivedPublisher,

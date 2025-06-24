@@ -3,6 +3,7 @@ const utils = require("./utils");
 module.exports = {
   dbRegisterUser: require("./dbRegisterUser"),
   dbUpdateUser: require("./dbUpdateUser"),
+  dbDeleteUser: require("./dbDeleteUser"),
   dbUpdateUserrole: require("./dbUpdateUserrole"),
   dbUpdatePassword: require("./dbUpdatePassword"),
   dbGetUser: require("./dbGetUser"),

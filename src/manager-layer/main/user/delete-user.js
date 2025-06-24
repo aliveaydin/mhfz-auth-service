@@ -2,7 +2,7 @@ const UserManager = require("./UserManager");
 const { isValidObjectId, isValidUUID, PaymentGateError } = require("common");
 const { hexaLogger } = require("common");
 const { ElasticIndexer } = require("serviceCommon");
-const { PasswordUpdatedPublisher } = require("../../route-events/publishers");
+const { UserDeletedPublisher } = require("../../route-events/publishers");
 
 const {
   HttpServerError,
@@ -11,15 +11,15 @@ const {
   ForbiddenError,
   NotFoundError,
 } = require("common");
-const { dbUpdatePassword } = require("dbLayer");
+const { dbDeleteUser } = require("dbLayer");
 
-class UpdatePasswordManager extends UserManager {
+class DeleteUserManager extends UserManager {
   constructor(request, controllerType) {
     super(request, {
-      name: "updatePassword",
+      name: "deleteUser",
       controllerType: controllerType,
       pagination: false,
-      crudType: "update",
+      crudType: "delete",
       loginRequired: true,
       hasShareToken: false,
     });
@@ -29,14 +29,10 @@ class UpdatePasswordManager extends UserManager {
 
   parametersToJson(jsonObj) {
     super.parametersToJson(jsonObj);
-    jsonObj.oldPassword = this.oldPassword;
-    jsonObj.newPassword = this.newPassword;
     jsonObj.userId = this.userId;
   }
 
   readRestParameters(request) {
-    this.oldPassword = request.body?.oldPassword;
-    this.newPassword = request.body?.newPassword;
     this.userId = request.params?.userId;
     this.requestData = request.body;
     this.queryData = request.query ?? {};
@@ -45,50 +41,11 @@ class UpdatePasswordManager extends UserManager {
   }
 
   readGrpcParameters(request) {
-    this.oldPassword = request.inputData.oldPassword;
-    this.newPassword = request.inputData.newPassword;
     this.userId = request.inputData.userId;
     this.requestData = request.inputData;
   }
 
-  async transformParameters() {
-    try {
-      this.oldPassword = this.oldPassword
-        ? this.hashString(this.oldPassword)
-        : null;
-    } catch (err) {
-      hexaLogger.error(
-        `Error transforming parameter oldPassword: ${err.message}`,
-      );
-      throw new BadRequestError(
-        "errMsg_ErrorTransformingParameter",
-        "SCRIPT_ERROR",
-        {
-          parameter: "oldPassword",
-          script: "this.oldPassword ? this.hashString(this.oldPassword) : null",
-          error: err.message,
-        },
-      );
-    }
-    try {
-      this.newPassword = this.newPassword
-        ? this.hashString(this.newPassword)
-        : null;
-    } catch (err) {
-      hexaLogger.error(
-        `Error transforming parameter newPassword: ${err.message}`,
-      );
-      throw new BadRequestError(
-        "errMsg_ErrorTransformingParameter",
-        "SCRIPT_ERROR",
-        {
-          parameter: "newPassword",
-          script: "this.newPassword ? this.hashString(this.newPassword) : null",
-          error: err.message,
-        },
-      );
-    }
-  }
+  async transformParameters() {}
 
   async setVariables() {}
 
@@ -101,14 +58,6 @@ class UpdatePasswordManager extends UserManager {
   }
 
   checkParameters() {
-    if (this.oldPassword == null) {
-      throw new BadRequestError("errMsg_oldPasswordisRequired");
-    }
-
-    if (this.newPassword == null) {
-      throw new BadRequestError("errMsg_newPasswordisRequired");
-    }
-
     if (this.userId == null) {
       throw new BadRequestError("errMsg_userIdisRequired");
     }
@@ -149,34 +98,29 @@ class UpdatePasswordManager extends UserManager {
     }
 
     //check "403" validations
-
-    // Validation Check: oldPassword
-    // Check if the current password mathces the old password. It is done after the instance is fetched.
-    if (!this.hashCompare(this.user.password, this.oldPassword)) {
-      throw new ForbiddenError("errMsg_TheOldPasswordDoesNotMatch");
-    }
   }
 
   async doBusiness() {
     // Call DbFunction
-    // make an awaited call to the dbUpdatePassword function to update the password and return the result to the controller
-    const password = await dbUpdatePassword(this);
+    // make an awaited call to the dbDeleteUser function to delete the user and return the result to the controller
+    const user = await dbDeleteUser(this);
 
-    return password;
+    return user;
   }
 
   async checkSessionInvalidates() {
     /*  
- await invalidateUserSessions(this.user.id);*/
+ await deleteUserSessions(this.userId);*/
   }
 
-  async invalidateUserSessions(userId) {
+  async deleteUserSessions(userId) {
     const userAuthUpdateKey = "hexauserauthupdate:" + userId;
     await setRedisData(userAuthUpdateKey, "true");
+    // delete sessions
   }
 
   async raiseEvent() {
-    PasswordUpdatedPublisher.Publish(this.output, this.session).catch((err) => {
+    UserDeletedPublisher.Publish(this.output, this.session).catch((err) => {
       console.log("Publisher Error in Rest Controller:", err);
     });
   }
@@ -194,18 +138,6 @@ class UpdatePasswordManager extends UserManager {
 
     return convertUserQueryToSequelizeQuery(routeQuery);
   }
-
-  async getDataClause() {
-    const { hashString } = require("common");
-
-    const dataClause = {
-      // password parameter is closed to update in inputLayer
-      // include it in dbLayer unless you are sure
-      password: this.newPassword,
-    };
-
-    return dataClause;
-  }
 }
 
-module.exports = UpdatePasswordManager;
+module.exports = DeleteUserManager;

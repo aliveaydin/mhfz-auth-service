@@ -68,16 +68,70 @@ class RegisterUserManager extends UserManager {
   }
 
   async transformParameters() {
-    this.avatar =
-      this.socialProfile?.avatar ??
-      (this.avatar
-        ? this.avatar
-        : `https://gravatar.com/avatar/${LIB.common.md5(this.email)}?s=200&d=identicon`);
-    this.password = this.socialProfile
-      ? (this.password ?? LIB.common.randomCode())
-      : this.password;
-    this.fullname = this.socialProfile?.fullname ?? this.fullname;
-    this.email = this.socialProfile?.email ?? this.email;
+    try {
+      this.avatar =
+        this.socialProfile?.avatar ??
+        (this.avatar
+          ? this.avatar
+          : `https://gravatar.com/avatar/${LIB.common.md5(this.email)}?s=200&d=identicon`);
+    } catch (err) {
+      hexaLogger.error(`Error transforming parameter avatar: ${err.message}`);
+      throw new BadRequestError(
+        "errMsg_ErrorTransformingParameter",
+        "SCRIPT_ERROR",
+        {
+          parameter: "avatar",
+          script:
+            "this.socialProfile?.avatar ?? (this.avatar ? this.avatar : `https://gravatar.com/avatar/${LIB.common.md5(this.email)}?s=200&d=identicon`)",
+          error: err.message,
+        },
+      );
+    }
+    try {
+      this.password = this.socialProfile
+        ? (this.password ?? LIB.common.randomCode())
+        : this.password;
+    } catch (err) {
+      hexaLogger.error(`Error transforming parameter password: ${err.message}`);
+      throw new BadRequestError(
+        "errMsg_ErrorTransformingParameter",
+        "SCRIPT_ERROR",
+        {
+          parameter: "password",
+          script:
+            "this.socialProfile ? this.password ?? LIB.common.randomCode() : this.password",
+          error: err.message,
+        },
+      );
+    }
+    try {
+      this.fullname = this.socialProfile?.fullname ?? this.fullname;
+    } catch (err) {
+      hexaLogger.error(`Error transforming parameter fullname: ${err.message}`);
+      throw new BadRequestError(
+        "errMsg_ErrorTransformingParameter",
+        "SCRIPT_ERROR",
+        {
+          parameter: "fullname",
+          script: "this.socialProfile?.fullname ?? this.fullname",
+          error: err.message,
+        },
+      );
+    }
+    try {
+      this.email = this.socialProfile?.email ?? this.email;
+    } catch (err) {
+      hexaLogger.error(`Error transforming parameter email: ${err.message}`);
+      throw new BadRequestError(
+        "errMsg_ErrorTransformingParameter",
+        "SCRIPT_ERROR",
+        {
+          parameter: "email",
+          script: "this.socialProfile?.email ?? this.email",
+          error: err.message,
+        },
+      );
+    }
   }
 
   async setVariables() {}

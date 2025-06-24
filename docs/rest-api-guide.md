@@ -55,6 +55,24 @@ Please ensure the token is correctly placed in one of these locations, using the
 
 This section outlines the API endpoints available within the Auth service. Each endpoint can receive parameters through various methods, meticulously described in the following definitions. It's important to understand the flexibility in how parameters can be included in requests to effectively interact with the Auth service.
 
+This service is configured to listen for HTTP requests on port `3001`,
+serving both the main API interface and default administrative endpoints.
+
+The following routes are available by default:
+
+- **API Test Interface (API Face):** `/`
+- **Swagger Documentation:** `/swagger`
+- **Postman Collection Download:** `/getPostmanCollection`
+- **Health Checks:** `/health` and `/admin/health`
+- **Current Session Info:** `/currentuser`
+- **Favicon:** `/favicon.ico`
+
+This service is accessible via the following environment-specific URLs:
+
+- **Preview:** `https://auth-api-mhfz.preview.mindbricks.com`
+- **Staging:** `https://auth-api-mhfz.staging.mindbricks.com`
+- **Production:** `https://auth-api-mhfz.prod.mindbricks.com`
+
 **Parameter Inclusion Methods:**
 Parameters can be incorporated into API requests in several ways, each with its designated location. Understanding these methods is crucial for correctly constructing your requests:
 
@@ -329,6 +347,56 @@ Following JSON represents the most comprehensive form of the **`user`** object i
 }
 ```
 
+### Route: deleteUser
+
+_Route Definition_ : This route is used by users to delete their profiles.
+
+_Route Type_ : delete
+
+_Default access route_ : _DELETE_ `/users/:userId`
+
+#### Parameters
+
+The deleteUser api has got 1 parameter
+
+| Parameter | Type | Required | Population             |
+| --------- | ---- | -------- | ---------------------- |
+| userId    | ID   | true     | request.params?.userId |
+
+To access the api you can use the **REST** controller with the path **DELETE /users/:userId**
+
+```js
+axios({
+  method: "DELETE",
+  url: `/users/${userId}`,
+  data: {},
+  params: {},
+});
+```
+
+The API response is encapsulated within a JSON envelope. Successful operations return an HTTP status code of 200 for get, getlist, update, or delete requests, and 201 for create requests. Each successful response includes a `"status": "OK"` property. For error handling, refer to the "Error Response" section.
+
+Following JSON represents the most comprehensive form of the **`user`** object in the respones. However, some properties may be omitted based on the object's internal logic.
+
+```json
+{
+  "status": "OK",
+  "statusCode": "200",
+  "elapsedMs": 126,
+  "ssoTime": 120,
+  "source": "db",
+  "cacheKey": "hexCode",
+  "userId": "ID",
+  "sessionId": "ID",
+  "requestId": "ID",
+  "dataName": "user",
+  "action": "delete",
+  "appVersion": "Version",
+  "rowCount": 1,
+  "user": { "id": "ID", "isActive": false }
+}
+```
+
 ### Route: updateUserRole
 
 _Route Definition_ : This route is used by admin roles to update the user role.The default role is user when a user is registered. A user&#39;s role can be updated by superAdmin or admin
@@ -598,6 +666,9 @@ _Access Routes_:
   - Set a cookie named `projectname-access-token[-tenantCodename]` with the JWT token.
   - Include the token in the response headers under the same name.
   - Return the full `session` object in the JSON body.
+  - Note that `username` parameter should have the email of the user as value.
+    You can also send an `email` parameter instead of `username` parameter.
+    If both sent only `username` parameter will be read.
 
 ```js
 // Sample POST /login call

@@ -285,6 +285,35 @@ The following JSON included in the payload illustrates the fullest representatio
 }
 ```
 
+## Route Event user-deleted
+
+**Event topic** : `mhfz-auth-service-user-deleted`
+
+**Event payload**:
+
+The event payload, mirroring the REST API response, is structured as an encapsulated JSON. It includes metadata related to the API as well as the `user` data object itself.
+
+The following JSON included in the payload illustrates the fullest representation of the **`user`** object. Note, however, that certain properties might be excluded in accordance with the object's inherent logic.
+
+```json
+{
+  "status": "OK",
+  "statusCode": "200",
+  "elapsedMs": 126,
+  "ssoTime": 120,
+  "source": "db",
+  "cacheKey": "hexCode",
+  "userId": "ID",
+  "sessionId": "ID",
+  "requestId": "ID",
+  "dataName": "user",
+  "action": "delete",
+  "appVersion": "Version",
+  "rowCount": 1,
+  "user": { "id": "ID", "isActive": false }
+}
+```
+
 ## Route Event userrole-updated
 
 **Event topic** : `mhfz-auth-service-userrole-updated`
